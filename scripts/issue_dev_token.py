@@ -20,8 +20,8 @@ def main() -> None:
     parser.add_argument(
         "--ttl",
         type=int,
-        default=86400,
-        help="Token lifetime in seconds (default: 86400 = 1 day)",
+        default=1,
+        help="Token lifetime in seconds (default: 1 = 1 second)",
     )
     args = parser.parse_args()
 
@@ -32,12 +32,14 @@ def main() -> None:
         )
 
     now = int(time.time())
+    ttl_seconds = args.ttl * 24 * 60 * 60
+
     token = jwt.encode(
         {
             "sub": args.sub,
             "scope": "user",
             "iat": now,
-            "exp": now + args.ttl,
+            "exp": now + ttl_seconds,
         },
         secret,
         algorithm="HS256",
@@ -47,3 +49,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
